@@ -15,8 +15,7 @@ import {
 import classnames from 'classnames'
 import style from './style.module.scss'
 // import { reg, ResultRegType } from '@/lib/getIpc'
-import { useIpc } from '@/lib/sendIpc'
-import { getIpc } from '@/lib/sendIpc'
+import { getIpc, IPC } from '@/lib/ipc'
 import useBridge from '@/hooks/useBridge'
 
 export default defineComponent({
@@ -37,13 +36,19 @@ export default defineComponent({
     setup() {
         const count = ref(0)
 
-        // const ipc = useIpc()
+        const ipcVal = ref<IPC | null>(null)
+
         onMounted(() => {
             const timer = setInterval(() => {
                 const ipc = getIpc()
 
                 if (ipc) {
-                    console.log('ipc', ipc)
+                    ipcVal.value = ipc
+
+                    ipc.on('load', (ctx) => {
+                        console.log(ctx)
+                    })
+
                     clearInterval(timer)
                 }
             })
@@ -51,6 +56,21 @@ export default defineComponent({
 
         const sendCount = () => {
             count.value++
+
+            if (!ipcVal.value) {
+                console.error('ipc 获取通信失败')
+            }
+
+            ipcVal.value?.send({
+                name: 'sendCount',
+                context: {
+                    count: count.value,
+                },
+            })
+
+            ipcVal.value?.on('load', (ctx) => {
+                console.log(ctx)
+            })
         }
 
         return {

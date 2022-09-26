@@ -33,8 +33,6 @@ const eventEmitter = new EventEmitter()
 const eventNames: string[] = []
 
 const receiveMessage = (ev: MessageEvent<MsgData>) => {
-    console.log('receiveMessage', ev)
-
     if (!ev.data.name) {
         // console.log(ev.data)
         return
@@ -98,15 +96,6 @@ export function useIpc() {
         const ipc = getIpc()
 
         if (ipc) {
-            console.log('ipc', ipc)
-
-            ipc.send({
-                name: 'vue-load',
-                context: {
-                    name: 'vue-load-data',
-                },
-            })
-
             ipc.on('load', (ctx: any) => {
                 console.log('ctx', ctx)
             })
