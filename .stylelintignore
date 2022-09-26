@@ -1,0 +1,8 @@
+node_modules/**/*.scss
+dist/**/*.css
+static/**/*.css
+*.tsx
+*.ts
+*.js
+*.jsx
+*.json
