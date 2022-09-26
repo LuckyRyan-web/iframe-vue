@@ -37,7 +37,17 @@ export default defineComponent({
     setup() {
         const count = ref(0)
 
-        const ipc = useIpc()
+        // const ipc = useIpc()
+        onMounted(() => {
+            const timer = setInterval(() => {
+                const ipc = getIpc()
+
+                if (ipc) {
+                    console.log('ipc', ipc)
+                    clearInterval(timer)
+                }
+            })
+        })
 
         const sendCount = () => {
             count.value++
