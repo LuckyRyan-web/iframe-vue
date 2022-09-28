@@ -4,23 +4,6 @@ import { ref, onMounted, onUnmounted, watch } from 'vue'
  */
 import EventEmitter from 'eventemitter3'
 
-export enum PostMessageKey {
-    Notification = 'yz-postmessgae-Notify',
-    Close = 'yz-postmessgae-CustomPageClose',
-    OpenNew = 'yz-postmessgae-CustomPageOpenNew',
-    TokenRefreshed = 'yz-postmessgae-UserUpdate',
-    SetGoodsDetail = 'yz-postmessgae-SetGoodsDetail',
-    OpenNewTab = 'yz-postmessgae-OpenNewTab',
-    AddGoods = 'yz-postmessgae-AddGoods',
-    ToCouponList = 'yz-postmessage-ToCouponList',
-    EditorReady = 'yz-postmessage-EditorReady',
-    EditorThemeData = 'yz-postmessage-EditorThemeData',
-    /**
-     * 商品详情编辑器加载完成
-     */
-    ProductDetailEditorOnload = 'yz-postmessgae-ProductDetailEditorOnload',
-}
-
 export interface MsgData {
     name: string
     context?: any
@@ -32,6 +15,7 @@ let ipc: IPC | null = null
 const eventEmitter = new EventEmitter()
 const eventNames: string[] = []
 
+/** 接收信息 */
 const receiveMessage = (ev: MessageEvent<MsgData>) => {
     if (!ev.data.name) {
         // console.log(ev.data)
@@ -41,6 +25,7 @@ const receiveMessage = (ev: MessageEvent<MsgData>) => {
     if (!eventNames.includes(ev.data.name)) {
         eventNames.push(ev.data.name)
     }
+
     if (!source && ev.source) {
         ipc = init(ev.source, ev.origin)
         setTimeout(() => {
@@ -88,29 +73,29 @@ window.addEventListener('message', receiveMessage, false)
 
 export const getIpc = () => ipc
 
-export function useIpc() {
-    // const [ipcClient, setIpcClient] = useState<IPC | null>(null)
-    const ipcClient = ref<IPC | null>(null)
+// export function useIpc() {
+//     // const [ipcClient, setIpcClient] = useState<IPC | null>(null)
+//     const ipcClient = ref<IPC | null>(null)
 
-    const ipcTimer = window.setInterval(() => {
-        const ipc = getIpc()
+//     const ipcTimer = window.setInterval(() => {
+//         const ipc = getIpc()
 
-        if (ipc) {
-            ipc.on('load', (ctx: any) => {
-                console.log('ctx', ctx)
-            })
+//         if (ipc) {
+//             ipc.on('load', (ctx: any) => {
+//                 console.log('ctx', ctx)
+//             })
 
-            ipcClient.value = ipc
+//             ipcClient.value = ipc
 
-            clearInterval(ipcTimer)
-        }
-    }, 6)
+//             clearInterval(ipcTimer)
+//         }
+//     }, 6)
 
-    onUnmounted(() => {
-        if (ipcTimer) {
-            clearInterval(ipcTimer)
-        }
-    })
+//     onUnmounted(() => {
+//         if (ipcTimer) {
+//             clearInterval(ipcTimer)
+//         }
+//     })
 
-    return ipcClient.value
-}
+//     return ipcClient.value
+// }
